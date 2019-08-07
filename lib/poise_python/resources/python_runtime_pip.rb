@@ -1,3 +1,4 @@
+# coding: utf-8
 #
 # Copyright 2015-2017, Noah Kantrowitz
 #
@@ -115,6 +116,7 @@ module PoisePython
           get_pip_url = new_resource.get_pip_url
           if get_pip_url == 'https://bootstrap.pypa.io/get-pip.py'
             python_version_cmd = poise_shell_out!([new_resource.parent.python_binary, '--version'], environment: new_resource.parent.python_environment)
+            python_version = python_version.gsub('+','').gsub('-','').gsub('~','') # stripping extra characters per https://www.debian.org/doc/debian-policy/ch-controlfields.html?fbclid=IwAR1Z9fSxh4pjfNbq-IUN78bLslaf4TlzBi7BI0AzKxj75AGREnxoh85O8cU#version
             # Python 2 puts the output on stderr, 3 is on stdout. You can't make this shit up.
             python_version = (python_version_cmd.stdout + python_version_cmd.stderr)[/Python (\S+)/, 1]
             Chef::Log.debug("[#{new_resource}] Checking for Python 2.6 fixup of get-pip URL, found Python version #{python_version || '(unknown)'}")
